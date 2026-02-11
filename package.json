@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "git": "^0.1.5"
+    "@prisma/client": "^7.3.0",
+    "git": "^0.1.5",
+    "nest": "^0.1.6",
+    "prisma": "^7.3.0"
   }
 }
