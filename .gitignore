@@ -1,5 +1,20 @@
-node_modules
+# dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# build
+dist/
+build/
+
+# env
 .env
-.env.example
-dist
-.next
+backend/.env
+frontend/.env
+
+# logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

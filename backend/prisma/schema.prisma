@@ -1,14 +1,71 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-}
-
 datasource db {
   provider = "postgresql"
+
+}
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  OPERATIVO
+  ADMIN
+  DIRECCION
+}
+
+enum AuditEntity{
+  VIAJE
+  FACTURA_CLIENTE
+  FACTURA_PROVEEDOR
+  COBRO
+  PAGO
+  USUARIO
+  MES
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String?  @unique
+  name         String
+  passwordHash String
+  role         Role     @default(OPERATIVO)
+  isActive     Boolean  @default(true)
+
+  lastLoginAt  DateTime?
+
+  version      Int      @default(1)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  auditLogs    AuditLog[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model AuditLog {
+  id         String       @id @default(uuid())
+
+  usuarioId  String?
+  usuario    User?        @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  accion     String
+  entidad    AuditEntity
+  entidadId  String?
+
+  antes      Json?
+  despues    Json?
+
+  ip         String?
+  userAgent  String?
+
+  createdAt  DateTime     @default(now())
+
+  @@index([usuarioId])
+  @@index([entidad])
+  @@index([createdAt])
 }
