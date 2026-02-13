@@ -8,5 +8,8 @@ exports.default = (0, config_1.defineConfig)({
         path: "prisma/migrations",
         seed: "ts-node prisma/seed.ts",
     },
+    datasource: {
+        url: process.env.DATABASE_URL,
+    },
 });
 //# sourceMappingURL=prisma.config.js.map

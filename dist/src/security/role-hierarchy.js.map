@@ -1,0 +1,1 @@
+{"version":3,"file":"role-hierarchy.js","sourceRoot":"","sources":["../../../src/security/role-hierarchy.ts"],"names":[],"mappings":";;;AAmBA,sCAKC;AAlBY,QAAA,cAAc,GAAyB;IAClD,SAAS,EAAE,CAAC;IACZ,cAAc,EAAE,CAAC;IACjB,SAAS,EAAE,CAAC;CACb,CAAC;AASF,SAAgB,aAAa,CAC3B,SAAe,EACf,UAAgB;IAEhB,OAAO,sBAAc,CAAC,SAAS,CAAC,GAAG,sBAAc,CAAC,UAAU,CAAC,CAAC;AAChE,CAAC"}

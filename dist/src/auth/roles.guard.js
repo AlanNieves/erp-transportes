@@ -9,31 +9,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtAuthGuard = void 0;
+exports.RolesGuard = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const core_1 = require("@nestjs/core");
-const public_decorator_1 = require("../common/decorators/public.decorator");
-let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+const require_permission_decorator_1 = require("../common/decorators/require-permission.decorator");
+const permissions_matrix_1 = require("../security/permissions.matrix");
+let RolesGuard = class RolesGuard {
     reflector;
     constructor(reflector) {
-        super();
         this.reflector = reflector;
     }
     canActivate(context) {
-        const isPublic = this.reflector.getAllAndOverride(public_decorator_1.IS_PUBLIC_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (isPublic) {
+        const requiredPermission = this.reflector.get(require_permission_decorator_1.PERMISSION_KEY, context.getHandler());
+        if (!requiredPermission) {
             return true;
         }
-        return super.canActivate(context);
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+        if (!user || !(0, permissions_matrix_1.can)(user.role, requiredPermission)) {
+            throw new common_1.ForbiddenException('Insufficient permissions');
+        }
+        return true;
     }
 };
-exports.JwtAuthGuard = JwtAuthGuard;
-exports.JwtAuthGuard = JwtAuthGuard = __decorate([
+exports.RolesGuard = RolesGuard;
+exports.RolesGuard = RolesGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.Reflector])
-], JwtAuthGuard);
-//# sourceMappingURL=jwt-auth.guard.js.map
+], RolesGuard);
+//# sourceMappingURL=roles.guard.js.map

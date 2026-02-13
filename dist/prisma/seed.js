@@ -41,26 +41,49 @@ const adapter = new adapter_pg_1.PrismaPg({
 });
 const prisma = new client_1.PrismaClient({ adapter });
 async function main() {
-    const adminEmail = 'admin@erp.com';
-    const existing = await prisma.user.findUnique({
-        where: { email: adminEmail },
-    });
-    if (existing) {
-        console.log('Admin already exists');
-        return;
-    }
     const passwordHash = await bcrypt.hash('Admin123456', 12);
-    await prisma.user.create({
-        data: {
-            email: adminEmail,
-            name: 'Administrador',
-            passwordHash,
-            role: client_1.Role.ADMIN,
+    const users = [
+        {
+            email: 'direccion@erp.com',
+            name: 'Direccion',
+            role: client_1.Role.DIRECCION,
         },
-    });
-    console.log('Admin creado');
+        {
+            email: 'admin@erp.com',
+            name: 'Administrativo',
+            role: client_1.Role.ADMINISTRATIVO,
+        },
+        {
+            email: 'operador@erp.com',
+            name: 'Operador',
+            role: client_1.Role.OPERATIVO,
+        },
+    ];
+    for (const user of users) {
+        await prisma.user.upsert({
+            where: { email: user.email },
+            update: {
+                name: user.name,
+                role: user.role,
+                isActive: true,
+            },
+            create: {
+                email: user.email,
+                name: user.name,
+                passwordHash,
+                role: user.role,
+            },
+        });
+        console.log(`✔ Usuario ${user.email} listo con rol ${user.role}`);
+    }
+    console.log('\n🚀 Seed completado correctamente\n');
 }
 main()
-    .catch(console.error)
-    .finally(() => prisma.$disconnect());
+    .catch((e) => {
+    console.error(e);
+    process.exit(1);
+})
+    .finally(async () => {
+    await prisma.$disconnect();
+});
 //# sourceMappingURL=seed.js.map

@@ -1,6 +1,7 @@
 import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '@prisma/client';
 export declare class UsersService {
-    private prisma;
+    private readonly prisma;
     constructor(prisma: PrismaService);
     findByEmail(email: string): Promise<{
         id: string;
@@ -28,12 +29,39 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    findAll(): Promise<{
+    findAll(actorRole: Role, includeInactive: boolean): Promise<{
         id: string;
         email: string;
         name: string;
         role: import("@prisma/client").$Enums.Role;
         isActive: boolean;
+        version: number;
         createdAt: Date;
     }[]>;
+    create(actorRole: Role, actorId: string, data: {
+        email: string;
+        name: string;
+        password: string;
+        role: Role;
+    }): Promise<{
+        id: string;
+        email: string;
+        name: string;
+        role: import("@prisma/client").$Enums.Role;
+        isActive: boolean;
+        version: number;
+        createdAt: Date;
+    }>;
+    updateRole(actorRole: Role, actorId: string, targetUserId: string, newRole: Role, version: number): Promise<{
+        id: string;
+        email: string;
+        name: string;
+        role: import("@prisma/client").$Enums.Role;
+        isActive: boolean;
+        version: number;
+        updatedAt: Date;
+    }>;
+    softDelete(actorRole: Role, actorId: string, targetUserId: string, version: number): Promise<{
+        message: string;
+    }>;
 }
